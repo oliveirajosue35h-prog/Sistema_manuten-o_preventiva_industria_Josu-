@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAI - Sistema de Manutenção Preventiva Industrial | Josué dos Santos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonte Inter Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        senai: {
+                            blue: '#005CA9',
+                            dark: '#003366',
+                            light: '#E6F0FA',
+                            accent: '#FF6B00'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        /* Animações suaves */
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilização para impressão oficial SENAI */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+            .container-print {
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                border: none;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+            }
+            th, td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 6px 8px !important;
+            }
+            .status-badge {
+                border: 1px solid #94a3b8;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #005CA9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #003366;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <header class="bg-gradient-to-r from-senai-dark to-senai-blue text-white shadow-lg no-print sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <!-- Logo e Título -->
+            <div class="flex items-center gap-4">
+                <div class="bg-white p-2 rounded-lg shadow-sm flex items-center justify-center">
+                    <!-- Símbolo SVG representativo SENAI / Indústria -->
+                    <svg class="w-8 h-8 text-senai-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded tracking-wide uppercase">SENAI</span>
+                        <span class="text-xs text-blue-200 font-medium">Manutenção Industrial</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Checklist de Manutenção Preventiva</h1>
+                </div>
+            </div>
+
+            <!-- Técnico Responsável e Data -->
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
+                <div class="w-10 h-10 rounded-full bg-senai-accent text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    JS
+                </div>
+                <div class="text-sm">
+                    <p class="text-blue-100 text-xs">Inspetor / Técnico:</p>
+                    <p class="font-bold text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-gear text-xs text-blue-300"></i>
+                        Josué dos Santos
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Banner Promocional do Sistema / Mensagem de Boas-vindas -->
+        <section class="no-print bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-senai-light rounded-xl text-senai-blue">
+                    <i class="fa-solid fa-clipboard-check text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-slate-800 text-base sm:text-lg">Painel Operacional de Inspeção Preventiva</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">Registre anomalias, acompanhe o status operacional das máquinas e gere relatórios com precisão técnico-industrial.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                <button onclick="exportToCSV()" class="px-3.5 py-2 text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel text-emerald-600"></i> Exportar CSV
+                </button>
+                <button onclick="window.print()" class="px-3.5 py-2 text-xs font-semibold bg-blue-50 text-senai-blue hover:bg-blue-100 border border-blue-200 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Imprimir / PDF
+                </button>
+            </div>
+        </section>
+
+        <!-- CARDS DE RESUMO ESTATÍSTICO -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
+            <!-- Total -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Inspeções</p>
+                    <p id="stat-total" class="text-2xl font-extrabold text-slate-800 mt-1">0</p>
+                </div>
+                <div class="p-3 bg-slate-100 text-slate-600 rounded-xl">
+                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Aprovados -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-emerald-600 uppercase tracking-wider">Aprovados</p>
+                    <p id="stat-approved" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+                </div>
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i class="fa-solid fa-circle-check text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Requer Ajuste -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-amber-600 uppercase tracking-wider">Requer Ajuste</p>
+                    <p id="stat-adjustment" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
+                </div>
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Reprovados -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-rose-600 uppercase tracking-wider">Reprovados</p>
+                    <p id="stat-rejected" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+                </div>
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-xl">
+                    <i class="fa-solid fa-circle-xmark text-xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
+            <!-- Coluna do Formulário -->
+            <section class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6">
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-3 h-3 rounded-full bg-senai-blue"></span>
+                        <h2 class="font-bold text-slate-800 text-lg">Nova Inspeção</h2>
+                    </div>
+                    <span class="text-xs text-slate-400 font-medium">* Campos obrigatórios</span>
+                </div>
+
+                <form id="inspection-form" class="space-y-4" onsubmit="handleFormSubmit(event)">
+                    <!-- Máquina -->
+                    <div>
+                        <label for="machine-name" class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Nome da Máquina *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-gears text-sm"></i>
+                            </span>
+                            <input type="text" id="machine-name" list="machines-list" required placeholder="Ex: Torno CNC, Prensa Hidráulica..."
+                                class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-blue focus:bg-white transition-all">
+                            <datalist id="machines-list">
+                                <option value="Torno CNC Nardini"></option>
+                                <option value="Fresadora Ferramenteira ISO 40"></option>
+                                <option value="Prensa Hidráulica 50T"></option>
+                                <option value="Compressor de Parafuso Atlas Copco"></option>
+                                <option value="Esteira Transportadora A2"></option>
+                                <option value="Centro de Usinagem Romi"></option>
+                                <option value="Caldeira Industrial A vapor"></option>
+                                <option value="Ponte Rolante 10 Toneladas"></option>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <!-- Setor -->
+                    <div>
+                        <label for="sector" class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Setor Industrial *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-industry text-sm"></i>
+                            </span>
+                            <select id="sector" required class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-blue focus:bg-white transition-all">
+                                <option value="" disabled selected>Selecione o setor...</option>
+                                <option value="Usinagem CNC">Usinagem CNC</option>
+                                <option value="Caldeiraria & Solda">Caldeiraria & Solda</option>
+                                <option value="Automação & Mecatrônica">Automação & Mecatrônica</option>
+                                <option value="Utilidades & Compressores">Utilidades & Compressores</option>
+                                <option value="Linha de Montagem">Linha de Montagem</option>
+                                <option value="Manutenção Elétrica">Manutenção Elétrica</option>
+                                <option value="Injeção Plástica">Injeção Plástica</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Item Verificado -->
+                    <div>
+                        <label for="checked-item" class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Item Verificado *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                            </span>
+                            <input type="text" id="checked-item" list="items-list" required placeholder="Ex: Nível de óleo lubrificante, Ruído anormal..."
+                                class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-blue focus:bg-white transition-all">
+                            <datalist id="items-list">
+                                <option value="Nível de óleo lubrificante"></option>
+                                <option value="Tensão e desgaste das correias"></option>
+                                <option value="Temperatura do motor elétrico"></option>
+                                <option value="Ruídos ou vibrações anormais"></option>
+                                <option value="Vazamento hidráulico/pneumático"></option>
+                                <option value="Sensores e botões de emergência"></option>
+                                <option value="Fixação de proteções de segurança"></option>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <!-- Status com Radio Buttons Estilizados -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-2">
+                            Status da Avaliação *
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <!-- Aprovado -->
+                            <label class="relative flex flex-col items-center justify-center p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-emerald-50/50 has-[:checked]:bg-emerald-50 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500 transition-all text-center">
+                                <input type="radio" name="status" value="Aprovado" required class="sr-only">
+                                <i class="fa-solid fa-circle-check text-lg text-emerald-600 mb-1"></i>
+                                <span class="text-xs font-semibold text-emerald-800">Aprovado</span>
+                            </label>
+
+                            <!-- Requer Ajuste -->
+                            <label class="relative flex flex-col items-center justify-center p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-amber-50/50 has-[:checked]:bg-amber-50 has-[:checked]:border-amber-500 has-[:checked]:ring-1 has-[:checked]:ring-amber-500 transition-all text-center">
+                                <input type="radio" name="status" value="Requer Ajuste" class="sr-only">
+                                <i class="fa-solid fa-triangle-exclamation text-lg text-amber-600 mb-1"></i>
+                                <span class="text-xs font-semibold text-amber-800">Requer Ajuste</span>
+                            </label>
+
+                            <!-- Reprovado -->
+                            <label class="relative flex flex-col items-center justify-center p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-rose-50/50 has-[:checked]:bg-rose-50 has-[:checked]:border-rose-500 has-[:checked]:ring-1 has-[:checked]:ring-rose-500 transition-all text-center">
+                                <input type="radio" name="status" value="Reprovado" class="sr-only">
+                                <i class="fa-solid fa-circle-xmark text-lg text-rose-600 mb-1"></i>
+                                <span class="text-xs font-semibold text-rose-800">Reprovado</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Upload de Foto de Anomalia -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Foto da Anomalia / Registro (Opcional)
+                        </label>
+                        <div class="mt-1 flex justify-center px-4 pt-3 pb-3 border-2 border-slate-300 border-dashed rounded-xl hover:border-senai-blue transition-all bg-slate-50">
+                            <div class="space-y-1 text-center">
+                                <div id="preview-container" class="hidden mb-2 relative inline-block">
+                                    <img id="image-preview" src="" alt="Pré-visualização" class="h-28 w-auto object-cover rounded-lg border border-slate-300 shadow-sm">
+                                    <button type="button" onclick="removeImage()" class="absolute -top-2 -right-2 bg-rose-600 text-white rounded-full p-1 text-xs hover:bg-rose-700 shadow-sm">
+                                        <i class="fa-solid fa-xmark w-4 h-4 flex items-center justify-center"></i>
+                                    </button>
+                                </div>
+                                <div id="upload-prompt" class="flex flex-col items-center text-xs text-slate-500">
+                                    <i class="fa-solid fa-camera text-2xl text-slate-400 mb-1"></i>
+                                    <label for="photo-input" class="relative cursor-pointer rounded-md font-medium text-senai-blue hover:underline">
+                                        <span>Anexar imagem</span>
+                                        <input id="photo-input" type="file" accept="image/*" class="sr-only" onchange="previewFile()">
+                                    </label>
+                                    <p class="text-[10px] text-slate-400 mt-1">PNG, JPG até 5MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div>
+                        <label for="notes" class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Observações Técnicas
+                        </label>
+                        <textarea id="notes" rows="3" placeholder="Descreva detalhes da não conformidade, ações corretivas recomendadas ou observações gerais..."
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-blue focus:bg-white transition-all"></textarea>
+                    </div>
+
+                    <!-- Botão Salvar -->
+                    <button type="submit" class="w-full py-3 px-4 bg-senai-blue hover:bg-senai-dark text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Salvar Inspeção
+                    </button>
+                </form>
+            </section>
+
+            <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-6 flex flex-col">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 mb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-3 h-3 rounded-full bg-senai-accent"></span>
+                        <h2 class="font-bold text-slate-800 text-lg">Registros de Inspeção</h2>
+                    </div>
+                    
+                    <!-- Busca e Filtros -->
+                    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                        <!-- Input de Busca -->
+                        <div class="relative flex-1 sm:w-48">
+                            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            </span>
+                            <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Buscar máquina/item..."
+                                class="w-full pl-8 pr-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-senai-blue">
+                        </div>
+
+                        <!-- Select de Status -->
+                        <select id="status-filter" onchange="filterTable()" class="py-1.5 px-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-senai-blue">
+                            <option value="ALL">Todos os Status</option>
+                            <option value="Aprovado">Aprovados</option>
+                            <option value="Requer Ajuste">Requer Ajuste</option>
+                            <option value="Reprovado">Reprovados</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabela de Registros -->
+                <div class="overflow-x-auto flex-grow rounded-xl border border-slate-200">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-3">Data/Hora</th>
+                                <th class="p-3">Máquina / Setor</th>
+                                <th class="p-3">Item Verificado</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-center">Foto</th>
+                                <th class="p-3 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inspection-tbody" class="divide-y divide-slate-200 text-xs text-slate-700">
+                            <!-- Linhas inseridas via JS -->
+                        </tbody>
+                    </table>
+
+                    <!-- Estado Vazio -->
+                    <div id="empty-state" class="hidden py-12 flex flex-col items-center justify-center text-center p-4">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i class="fa-solid fa-clipboard text-xl"></i>
+                        </div>
+                        <p class="font-semibold text-slate-600">Nenhuma inspeção registrada</p>
+                        <p class="text-xs text-slate-400 max-w-xs mt-1">Preencha o formulário ao lado para cadastrar a primeira verificação de preventiva.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="print-area" class="print-only container-print bg-white p-6">
+            <div class="border-b-2 border-senai-blue pb-4 mb-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-senai-blue uppercase">SENAI - Serviço Nacional de Aprendizagem Industrial</h1>
+                    <h2 class="text-lg font-semibold text-slate-700">Relatório Oficial de Manutenção Preventiva</h2>
+                </div>
+                <div class="text-right text-xs text-slate-600">
+                    <p><strong>Inspetor Técnico:</strong> Josué dos Santos</p>
+                    <p><strong>Data de Emissão:</strong> <span id="print-date"></span></p>
+                </div>
+            </div>
+
+            <table class="w-full text-xs">
+                <thead>
+                    <tr class="bg-slate-100 uppercase font-bold text-slate-700">
+                        <th>ID</th>
+                        <th>Data/Hora</th>
+                        <th>Máquina</th>
+                        <th>Setor</th>
+                        <th>Item Verificado</th>
+                        <th>Status</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody id="print-tbody">
+                    <!-- Registros clonados para impressão -->
+                </tbody>
+            </table>
+
+            <div class="mt-12 pt-8 border-t border-slate-300 flex justify-between text-center text-xs text-slate-600">
+                <div class="w-48 border-t border-slate-400 pt-1">
+                    <p>Josué dos Santos</p>
+                    <p class="font-bold">Inspetor de Manutenção</p>
+                </div>
+                <div class="w-48 border-t border-slate-400 pt-1">
+                    <p>Supervisão Técnica</p>
+                    <p class="font-bold">SENAI Industrial</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="image-modal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 no-print" onclick="closeImageModal()">
+        <div class="relative bg-white rounded-2xl max-w-2xl w-full p-2 overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center p-3 border-b border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-image text-senai-blue"></i> Foto da Anomalia
+                </h3>
+                <button onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-2 flex justify-center bg-slate-950">
+                <img id="modal-img" src="" alt="Anomalia Ampliada" class="max-h-[70vh] object-contain rounded">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado Global da Aplicação
+        let inspections = [];
+        let currentImageDataBase64 = '';
+
+        // Executar no carregamento inicial da página
+        window.onload = function() {
+            loadFromLocalStorage();
+            updateStats();
+            renderTable();
+            setCurrentDateForPrint();
+        };
+
+        // Atualizar Data no Relatório de Impressão
+        function setCurrentDateForPrint() {
+            const dateSpan = document.getElementById('print-date');
+            if (dateSpan) {
+                dateSpan.innerText = new Date().toLocaleString('pt-BR');
+            }
+        }
+
+        // Pré-visualização da imagem e conversão para Base64
+        function previewFile() {
+            const fileInput = document.getElementById('photo-input');
+            const preview = document.getElementById('image-preview');
+            const previewContainer = document.getElementById('preview-container');
+            const uploadPrompt = document.getElementById('upload-prompt');
+            const file = fileInput.files[0];
+
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('A imagem deve ter no máximo 5MB.');
+                    fileInput.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    currentImageDataBase64 = reader.result;
+                    preview.src = reader.result;
+                    previewContainer.classList.remove('hidden');
+                    uploadPrompt.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remover imagem selecionada no formulário
+        function removeImage() {
+            document.getElementById('photo-input').value = '';
+            document.getElementById('image-preview').src = '';
+            document.getElementById('preview-container').classList.add('hidden');
+            document.getElementById('upload-prompt').classList.remove('hidden');
+            currentImageDataBase64 = '';
+        }
+
+        // Processamento do Envio do Formulário
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const machineName = document.getElementById('machine-name').value.trim();
+            const sector = document.getElementById('sector').value;
+            const checkedItem = document.getElementById('checked-item').value.trim();
+            const statusRadios = document.getElementsByName('status');
+            let selectedStatus = '';
+
+            for (const radio of statusRadios) {
+                if (radio.checked) {
+                    selectedStatus = radio.value;
+                    break;
+                }
+            }
+
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!machineName || !sector || !checkedItem || !selectedStatus) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            // Criar Novo Objeto de Inspeção
+            const newInspection = {
+                id: 'INSP-' + Date.now().toString().slice(-6),
+                dateTime: new Date().toLocaleString('pt-BR'),
+                timestamp: Date.now(),
+                inspector: 'Josué dos Santos',
+                machineName,
+                sector,
+                checkedItem,
+                status: selectedStatus,
+                photo: currentImageDataBase64,
+                notes: notes || 'Nenhuma observação registrada.'
+            };
+
+            // Adicionar ao início da lista
+            inspections.unshift(newInspection);
+
+            // Salvar, atualizar telas e limpar formulário
+            saveToLocalStorage();
+            renderTable();
+            updateStats();
+            resetForm();
+
+            // Mensagem de confirmação simples e elegante
+            showNotification('Inspeção registrada com sucesso!');
+        }
+
+        // Resetar Formulário
+        function resetForm() {
+            document.getElementById('inspection-form').reset();
+            removeImage();
+        }
+
+        // Notificação Flash
+        function showNotification(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 text-xs font-semibold fade-in';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Renderizar Tabela
+        function renderTable() {
+            const tbody = document.getElementById('inspection-tbody');
+            const printTbody = document.getElementById('print-tbody');
+            const emptyState = document.getElementById('empty-state');
+
+            tbody.innerHTML = '';
+            printTbody.innerHTML = '';
+
+            if (inspections.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            inspections.forEach((item, index) => {
+                // Definir Badge de Status
+                let statusBadgeHtml = '';
+                if (item.status === 'Aprovado') {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Aprovado
+                                       </span>`;
+                } else if (item.status === 'Requer Ajuste') {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Requer Ajuste
+                                       </span>`;
+                } else {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> Reprovado
+                                       </span>`;
+                }
+
+                // Thumbnail Foto
+                const photoHtml = item.photo ? 
+                    `<button onclick="openImageModal('${item.photo}')" class="group relative inline-block">
+                        <img src="${item.photo}" class="w-9 h-9 object-cover rounded-lg border border-slate-200 group-hover:opacity-80 transition-all shadow-sm">
+                        <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-slate-900/40 rounded-lg text-white text-xs">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                        </span>
+                    </button>` : 
+                    `<span class="text-slate-300 text-xs">—</span>`;
+
+                // TR para Tabela na Tela
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition-colors fade-in';
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-500 text-[11px] font-mono">
+                        <div>${item.dateTime.split(' ')[0]}</div>
+                        <div class="text-[10px] text-slate-400">${item.dateTime.split(' ')[1] || ''}</div>
+                    </td>
+                    <td class="p-3">
+                        <div class="font-bold text-slate-800">${item.machineName}</div>
+                        <div class="text-[11px] text-slate-500">${item.sector}</div>
+                    </td>
+                    <td class="p-3 font-medium text-slate-700 max-w-[150px] truncate" title="${item.checkedItem}">
+                        ${item.checkedItem}
+                    </td>
+                    <td class="p-3">${statusBadgeHtml}</td>
+                    <td class="p-3 text-center">${photoHtml}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteInspection('${item.id}')" title="Excluir Registro" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // TR para Relatório Impresso
+                const printTr = document.createElement('tr');
+                printTr.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.dateTime}</td>
+                    <td><strong>${item.machineName}</strong></td>
+                    <td>${item.sector}</td>
+                    <td>${item.checkedItem}</td>
+                    <td><span class="status-badge">${item.status}</span></td>
+                    <td>${item.notes}</td>
+                `;
+                printTbody.appendChild(printTr);
+            });
+        }
+
+        // Atualizar Contadores de Métricas
+        function updateStats() {
+            const total = inspections.length;
+            const approved = inspections.filter(i => i.status === 'Aprovado').length;
+            const adjustment = inspections.filter(i => i.status === 'Requer Ajuste').length;
+            const rejected = inspections.filter(i => i.status === 'Reprovado').length;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-approved').innerText = approved;
+            document.getElementById('stat-adjustment').innerText = adjustment;
+            document.getElementById('stat-rejected').innerText = rejected;
+        }
+
+        // Filtrar Tabela por Texto e Status
+        function filterTable() {
+            const searchValue = document.getElementById('search-input').value.toLowerCase();
+            const statusValue = document.getElementById('status-filter').value;
+            const tbody = document.getElementById('inspection-tbody');
+            const rows = tbody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const item = inspections[i];
+                if (!item) continue;
+
+                const matchesText = item.machineName.toLowerCase().includes(searchValue) ||
+                                    item.sector.toLowerCase().includes(searchValue) ||
+                                    item.checkedItem.toLowerCase().includes(searchValue);
+
+                const matchesStatus = (statusValue === 'ALL') || (item.status === statusValue);
+
+                if (matchesText && matchesStatus) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        // Excluir Registro
+        function deleteInspection(id) {
+            if (confirm('Tem certeza que deseja excluir esta inspeção?')) {
+                inspections = inspections.filter(item => item.id !== id);
+                saveToLocalStorage();
+                renderTable();
+                updateStats();
+                showNotification('Registro excluído com sucesso.');
+            }
+        }
+
+        // Abrir Modal da Imagem
+        function openImageModal(imgSrc) {
+            document.getElementById('modal-img').src = imgSrc;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+
+        // Fechar Modal da Imagem
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+            document.getElementById('modal-img').src = '';
+        }
+
+        // Exportar Dados para Arquivo CSV (Excel)
+        function exportToCSV() {
+            if (inspections.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // Byte Order Mark para UTF-8 no Excel
+            csvContent += "ID;Data/Hora;Inspetor;Maquina;Setor;Item Verificado;Status;Observacoes\n";
+
+            inspections.forEach(item => {
+                const cleanNotes = item.notes.replace(/(\r\n|\n|\r)/gm, " ");
+                const row = `"${item.id}";"${item.dateTime}";"${item.inspector}";"${item.machineName}";"${item.sector}";"${item.checkedItem}";"${item.status}";"${cleanNotes}"`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Checklist_Manutencao_SENAI_Josue_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Persistência em localStorage
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('senai_inspections_josue', JSON.stringify(inspections));
+            } catch (e) {
+                console.error('Erro ao salvar no localStorage:', e);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem('senai_inspections_josue');
+                if (stored) {
+                    inspections = JSON.parse(stored);
+                } else {
+                    // Exemplo Inicial para demonstração limpa
+                    inspections = [
+                        {
+                            id: 'INSP-102938',
+                            dateTime: new Date().toLocaleString('pt-BR'),
+                            timestamp: Date.now(),
+                            inspector: 'Josué dos Santos',
+                            machineName: 'Torno CNC Nardini',
+                            sector: 'Usinagem CNC',
+                            checkedItem: 'Nível de óleo lubrificante',
+                            status: 'Aprovado',
+                            photo: '',
+                            notes: 'Nível dentro dos padrões normais de operação.'
+                        }
+                    ];
+                    saveToLocalStorage();
+                }
+            } catch (e) {
+                console.error('Erro ao carregar do localStorage:', e);
+                inspections = [];
+            }
+        }
+    </script>
+</body>
+</html>
